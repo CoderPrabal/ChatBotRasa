@@ -1,0 +1,78 @@
+#input of the paragraph
+paragraph=input("Enter atlease four sentences in a paragraph")
+#Task1
+#Print the paragraph
+#using print function to print the paragraph
+print(paragraph)
+#Task2
+#creating the list of sentences
+list_of_sentence=paragraph.split('.')
+print(list_of_sentence)
+#finding the number of sentences in the list
+value_length=len(list_of_sentence)
+print(value_length)
+middle_value=value_length//2
+print(middle_value)
+#updating the middle value
+temp_list_of_sentence=list_of_sentence.copy()
+temp_list_of_sentence[middle_value]="Ust Global specialize in Healthcare,Retail & consumer Goods,Banking & Financial Services,Telecom Media & Technology,Insurance,Transportation & Logictics and Manufacturing & utilities"
+print(temp_list_of_sentence)
+#finding vowels
+list_of_vowels=["a","e","i","o","u"]
+count_of_vowels=0
+count_of_uppercase=0
+count_of_lowercase=0
+count_of_not_special_char=0
+count_of_special_char=0
+for i in list_of_sentence:
+    for j in i:
+        if list_of_vowels.__contains__(j):
+            count_of_vowels=count_of_vowels+1
+        if j.isupper():
+            count_of_uppercase=count_of_uppercase+1
+        if j.islower():
+            count_of_lowercase=count_of_lowercase+1
+        if j.isdigit() or j.isalpha():
+            count_of_not_special_char=count_of_not_special_char+1
+
+count_of_special_char=len(paragraph)-count_of_not_special_char
+#count the total number of vowels
+print(count_of_vowels)
+print(count_of_uppercase)
+print(count_of_lowercase)
+print(count_of_special_char)
+#counting the number of repeated words
+dict1={i:list_of_sentence.count(i) for i in list_of_sentence}
+#The dictionary contains the number of occurences of every character
+print(dict1)
+#remove all special character and print the paragraph
+final_string=""
+for i in list_of_sentence:
+    for j in i:
+        if j.isalpha() or j.isdigit():
+            final_string=final_string+j
+#string without any special char
+print(final_string)
+#swapping the first and last sentences
+temp_value=list_of_sentence[0]
+list_of_sentence[0]=list_of_sentence[len(list_of_sentence)-1]
+list_of_sentence[len(list_of_sentence)-1]=temp_value
+#print the sentences after swapping
+print(list_of_sentence)
+
+
+
+Output-:
+Enter atlease four sentences in a paragraphPrbalahd.fbsdjf.sdfjdjk.sfjksd
+Prbalahd.fbsdjf.sdfjdjk.sfjksd
+['Prbalahd', 'fbsdjf', 'sdfjdjk', 'sfjksd']
+4
+2
+['Prbalahd', 'fbsdjf', 'Ust Global specialize in Healthcare,Retail & consumer Goods,Banking & Financial Services,Telecom Media & Technology,Insurance,Transportation & Logictics and Manufacturing & utilities', 'sfjksd']
+2
+1
+26
+3
+{'Prbalahd': 1, 'fbsdjf': 1, 'sdfjdjk': 1, 'sfjksd': 1}
+Prbalahdfbsdjfsdfjdjksfjksd
+['sfjksd', 'fbsdjf', 'sdfjdjk', 'Prbalahd']
