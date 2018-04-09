@@ -1,0 +1,13 @@
+import numpy as np
+matrix=[[1,6.5,4.9][1,6.4,9.1],[1,7.1,4.0],[1,6.9,2.9],[1,7.1,5.3]]
+Y=[[504],[453],[728],[701],[760]]
+mat=np.array(matrix)
+trans=matrix.transpose()
+print(trans)
+mul=trans*matrix
+print(mul)
+inverse = np.linalg.inv(mul)
+print(inverse)
+temp=inverse*trans
+final=temp*Y
+print(final)
