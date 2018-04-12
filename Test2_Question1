@@ -1,0 +1,58 @@
+import operator
+import math
+
+fobj = open("Data_Test", 'r')
+list_of_all_data = [x.strip() for x in fobj.readlines()]
+# printing all the people
+print(list_of_all_data)
+name = {}
+height = []
+weight = []
+bmi = []
+bmi_dict = {}
+bmi_dict_overweight = []
+bmi_dict_underweight=[]
+bmi_dict_obese=[]
+bmi_dict_normal_weight=[]
+
+
+for i in list_of_all_data:
+    list_of_value = i.split(',')
+    name[list_of_value[0]] = list_of_value[3]
+    weight.append(list_of_value[4])
+    height.append(list_of_value[3])
+    # calculating the bmi
+    bmi_value = int(list_of_value[4]) / (math.pow(float(list_of_value[3]), 2))
+    # condtion for Bmi decision
+    if round(bmi_value, 1) < 18.5:
+        bmi_dict[list_of_value[0]] = "UnderWeight"
+        bmi_dict_underweight.append(list_of_value[0])
+    elif round(bmi_value, 1) > 18.5 and round(bmi_value, 1) <= 24.5:
+        bmi_dict[list_of_value[0]] = "HealthyWeight"
+        bmi_dict_normal_weight.append(list_of_value[0])
+    elif round(bmi_value, 1) > 24.5 and round(bmi_value, 1) <= 30:
+        bmi_dict[list_of_value[0]] = "OverWeight"
+        bmi_dict_overweight.append(list_of_value[0])
+    elif round(bmi_value, 1) > 30:
+        bmi_dict[list_of_value[0]] = "Obese"
+        bmi_dict_obese.append(list_of_value[0])
+
+    bmi.append(bmi_value)
+    print(list_of_value)
+
+sorted_name = sorted(name.items(), key=operator.itemgetter(1))
+# sorting all values based on height
+print(sorted_name)
+# Printing the bmi dictionary
+print(bmi_dict)
+# bmi of all the people
+print(bmi)
+#
+print("All the under weight people are")
+print(bmi_dict_underweight)
+print("All the normal weight people are")
+print(bmi_dict_normal_weight)
+print("All the overweight people are")
+print(bmi_dict_overweight)
+print("All the obese people are")
+print(bmi_dict_obese)
