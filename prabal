@@ -1,0 +1,36 @@
+from sklearn import datasets
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn import svm
+from sklearn.model_selection import train_test_split
+
+
+iris = datasets.load_iris()
+
+
+data = pd.DataFrame(iris['data'])
+data.columns = iris['feature_names']
+data['label'] = iris['target']
+
+print(data.tail())
+
+sns.pairplot(data=data,hue='label')
+
+y=data['label']
+data.drop(['label'],axis=1)
+X = data
+
+clf = svm.SVC(kernel='linear',gamma=0.1,C=100)
+
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.33)
+clf.fit(X_train,y_train)
+
+y_pred = clf.predict(X_test)
+
+score = clf.score(X_test,y_test)
+print("Accuracy Score of the classifier is %.2f" %(score))
+
+print(list(y_test))
+print(y_pred)
