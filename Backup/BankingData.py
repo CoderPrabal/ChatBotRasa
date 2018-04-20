@@ -1,0 +1,52 @@
+import pandas as pd
+import numpy as np
+from sklearn import preprocessing
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+from sklearn.cross_validation import train_test_split
+import seaborn as sns
+plt.rc("font",size=14)
+sns.set(style="white")
+sns.set(style="whitegrid",color_codes=True)
+#reading the file
+data=pd.read_csv('banking.csv',header=0)
+print(data)
+data=data.dropna()
+print(data.shape)
+print(list(data.columns))
+print(data['education'].unique())
+data['education']=np.where(data['education'] =='basic.9y', 'Basic', data['education'])
+data['education']=np.where(data['education'] =='basic.6y', 'Basic', data['education'])
+data['education']=np.where(data['education'] =='basic.4y', 'Basic', data['education'])
+#after grouping
+print(data['education'].unique())
+print(data['y'].value_counts())
+sns.countplot(x='y',data=data,palette='hls')
+plt.show()
+plt.savefig('count_plot')
+print(data.groupby('y').mean())
+print(data.groupby('job').mean())
+print(data.groupby('marital').mean())
+print(data.groupby('education').mean())
+pd.crosstab(data.job,data.y).plot(kind='bar')
+plt.title('Purchase Frequency for Job Title')
+plt.xlabel('Job')
+plt.ylabel('Frequency of Purchase')
+plt.savefig('purchase_fre_job')
+table=pd.crosstab(data.marital,data.y)
+table.div(table.sum(1).astype(float), axis=0).plot(kind='bar', stacked=True)
+plt.title('Stacked Bar Chart of Marital Status vs Purchase')
+plt.xlabel('Marital Status')
+plt.ylabel('Proportion of Customers')
+plt.savefig('mariral_vs_pur_stack')
+table=pd.crosstab(data.education,data.y)
+table.div(table.sum(1).astype(float), axis=0).plot(kind='bar', stacked=True)
+plt.title('Stacked Bar Chart of Education vs Purchase')
+plt.xlabel('Education')
+plt.ylabel('Proportion of Customers')
+plt.savefig('edu_vs_pur_stack')
+pd.crosstab(data.day_of_week,data.y).plot(kind='bar')
+plt.title('Purchase Frequency for Day of Week')
+plt.xlabel('Day of Week')
+plt.ylabel('Frequency of Purchase')
+plt.savefig('pur_dayofweek_bar')

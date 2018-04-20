@@ -1,0 +1,15 @@
+import pandas as pd
+df=pd.read_csv("April11Data.csv")
+print(df)
+print(df.describe())
+print(df.info())
+print(df.dtypes)
+print(df.columns.to_series().groupby(df.dtypes).groups)
+name=list(df['Name'])
+print(name)
+price=list(df['ExtPrice'])
+dict1={"Name":list(name),"Price":list(price)}
+print(dict1)
+df_new=pd.DataFrame(dict1)
+print(df_new)
+print(df[['Name','ExtPrice']])
