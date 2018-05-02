@@ -1,0 +1,184 @@
+# =============================================================================
+# import tika
+# from tika import parser
+# parsed = parser.from_file(r'C:\Users\user\Downloads\Anthem1.docx', xmlContent=True)
+# =============================================================================
+
+import mammoth
+with open(r"C:\Users\Prabal\Desktop\PdfDocument\Anthem.docx", "rb") as docx_file:
+    result = mammoth.convert_to_html(docx_file)
+    html = result.value # The generated HTML
+    messages = result.messages # Any messages, such as warnings during conversion
+f = open(r"C:\Users\Prabal\Desktop\PdfDocument\Anthem_Bronze.html","w")
+f.write(html)
+
+from bs4 import BeautifulSoup
+soup = BeautifulSoup(html,'html.parser')
+#soup.prettify()
+
+blacklist = ["img" ]
+for tag in soup.findAll():
+        if tag.name.lower() in blacklist:
+            # blacklisted tags are removed in their entirety
+            tag.extract()
+
+
+
+import nltk
+from nltk.tokenize import sent_tokenize,word_tokenize
+from nltk.corpus import stopwords
+from string import punctuation
+import pandas as pd
+from nltk.stem.snowball import SnowballStemmer
+stemmer = SnowballStemmer("english")
+
+
+#user_input=input("please enter your query:\n")
+user_input="wheelchair"
+sents = sent_tokenize(user_input)
+word_sent = word_tokenize(user_input.lower())
+
+_stopwords = set(stopwords.words('english') + list(punctuation))
+user_input_words=[word for word in word_sent if word not in _stopwords]
+user_input_words=[stemmer.stem(i) for i in user_input_words]
+
+
+# =============================================================================
+# for item in word_sent[2:4]:
+#         tokenized = nltk.word_tokenize(item)
+#         tagged = nltk.pos_tag(tokenized)
+#         print(tagged)
+# 
+# 
+# =============================================================================
+
+all_h1=soup.find_all('h2')
+
+d_ms={}
+for item in all_h1:
+    first=item
+    second=first.find_next('h2')
+    temp=""
+    
+    while first.findNext()!=second:
+        temp+= str(first.findNext().text)+" "
+        first=first.findNext()
+    d_ms[str(item.text)]=temp
+
+for item,value in d_ms.items():
+    print(item,"\n",value,'-----------------','\n')    
+    
+
+
+d_kwds={}
+for key,val in d_ms.items():
+    sents = sent_tokenize(val)
+    word_sent = word_tokenize(val.lower())
+    _stopwords = set(stopwords.words('english') + list(punctuation))
+    section_words=[word for word in word_sent if word not in _stopwords]
+    d_kwds[key]=set(section_words)
+    
+    
+d_stem={}
+for key,val in d_kwds.items():
+    singles = [stemmer.stem(i) for i in val]
+    d_stem[key]=set(singles)
+    
+    
+key_section={}
+for i in user_input_words:
+    temp=[]
+    for key,val in d_stem.items(): 
+        if i in val:
+            temp.append(key)
+    key_section[i]=temp
+        
+
+
+##### finding heading in tables
+tables = soup.find_all('table')
+table1=tables[0]
+t=pd.read_html(html,header=0)
+
+
+t[0].columns.values[0]=t[0].columns.values[0].replace('\t',',')
+t[0]=t[0].apply(lambda x: x.str.replace('\t',','))
+t[0]=t[0].apply(lambda x: x.str.replace('”',''))
+t[0]=t[0].apply(lambda x: x.str.replace('“',''))
+
+t[0].to_csv(r"C:\Users\Prabal\Desktop\PdfDocument\test.csv",sep=',')
+t1=pd.read_html(tables,header=0)
+
+from docx import *
+
+wordDoc = Document(r'C:\Users\Prabal\Desktop\PdfDocument\Anthem.docx')
+
+for table in wordDoc.tables:
+    for row in table.rows:
+        for cell in row.cells:
+            print cell.text
+
+from tabula import read_pdf
+df=read_pdf(r"C:\Users\Prabal\Desktop\PdfDocument\Anthem3.pdf","test.json",output_format="json")
+print(df)
+
+
+
+from textblob import TextBlob
+from nltk.corpus import stopwords
+from string import punctuation
+from nltk.stem.snowball import SnowballStemmer
+stemmer = SnowballStemmer("english")
+text="Your Plan includes benefits for durable medical equipment and medical devices when the equipment meets the following criteria Is meant for repeated use and is not disposable Is used for a medical purpose and is of no further use when medical need ends Is meant for use outside a medical Facility Is only for the use of the patient Is made to serve a medical use Benefits include purchase-only equipment and devices (e.g., crutches and customized equipment),purchase or rent-to-purchase equipment and devices (e.g., Hospital beds and wheelchairs), andcontinuous rental equipment and devices (e.g., oxygen concentrator, ventilator, and negative pressurewound therapy devices). Continuous rental equipment must be approved by us. We may limit theamount of coverage for ongoing rental of equipment. We may not cover more in rental costs than the costof simply purchasing the equipment."
+#coverting the text into TextBlob
+text_b=TextBlob(text)
+print(text_b.noun_phrases)
+_stopwords = set(stopwords.words('english') + list(punctuation))
+input_words=text_b.words
+user_input_words=[word for word in input_words if word not in _stopwords]
+user_input_words=[stemmer.stem(i) for i in user_input_words]
+user_blob=TextBlob(str(user_input_words))
+#making n-grams
+ng2=user_blob.ngrams(2)
+ng3=user_blob.ngrams(3)
+#==============================================================================
+# print(user_blob.noun_phrases.count('wheelchair'))
+# print(text_b.sentences)
+# for i in text_b.sentences:
+#     print(i.noun_phrases.count('wheelchairs'))
+# print(text_b.parse())
+#==============================================================================
+from textblob.classifiers import NaiveBayesClassifier
+tup_lis=[]
+count=0
+for i in ng2:
+    if
+    val=(i,"Durable Medical Equipment")
+    print(val)
+    #print(type(i))
+train=[]
+#==============================================================================
+# train = [
+#     ('I love this sandwich.', 'simple'),
+#     ('This is an amazing place!', 'simple'),
+#     ('I feel very good about these beers.', 'pos'),
+#     ('This is my best work.', 'pos'),
+#     ("What an awesome view", 'pos'),
+#     ('I do not like this restaurant', 'neg'),
+#     ('I am tired of this stuff.', 'neg'),
+#     ("I can't deal with this", 'neg'),
+#     ('He is my sworn enemy!', 'simple'),
+#     ('My boss is horrible.', 'simple')
+# ]
+# test = [
+#==============================================================================
+    ('The beer was good.', 'pos'),
+    ('I do not enjoy my job', 'neg'),
+    ("I ain't feeling dandy today.", 'simple'),
+    ("I feel amazing!", 'simple'),
+    ('Gary is a friend of mine.', 'pos'),
+    ("I can't believe I'm doing this.", 'neg')
+]
+
+cl = NaiveBayesClassifier(ng2)
+cl.classify("purchas euip")
