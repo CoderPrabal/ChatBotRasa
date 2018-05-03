@@ -1,0 +1,52 @@
+list_for_durable_medical=['plan','benefits','durable','medical','equipment','devices','equipment','disposable','wheelchair']
+list_for_therapy_services=['physical','medicine','therapy','services','children','speech','occupational','treatment','congenital','defects']
+bag_of_words=list_for_therapy_services+list_for_durable_medical
+ #apply steming
+from nltk.stem.snowball import SnowballStemmer
+stemmer = SnowballStemmer("english")
+
+user_input_words=[stemmer.stem(i) for i in bag_of_words]
+list_of_durable_words=[stemmer.stem(i) for i in list_for_durable_medical]
+list_of_therapy_words=[stemmer.stem(i) for i in list_for_therapy_services]
+ #appy word tokrnize
+import pandas as pd
+df=pd.DataFrame(columns=user_input_words)
+
+list_of_one_hot_encode=[0]*len(user_input_words)
+increment_value=0
+list_of_columns=list(df.columns.values)
+#Performing one hot encoding
+for i in list_of_durable_words:
+    if i in list_of_columns:
+        print(i)
+        list_of_one_hot_encode[list_of_columns.index(i)]=1
+        
+list_of_one_hot_encode=[0]*len(user_input_words)
+df.loc[0]=list_of_one_hot_encode
+increment_value=0
+list_of_columns=list(df.columns.values)
+#Performing one hot encoding
+for i in list_of_therapy_words:
+    if i in list_of_columns:
+        print(i)
+        list_of_one_hot_encode[list_of_columns.index(i)]=1        
+df.loc[1]=list_of_one_hot_encode
+
+import numpy as np
+df["Class"]=np.array([0,1])
+from sklearn.naive_bayes import GaussianNB
+nb=GaussianNB()
+y=df["Class"]
+x=df.drop("Class",axis=1)
+x=x.drop("Index",axis=1)
+nb.fit(x,y)
+
+list_of_keyword=["physical"]
+list_of_inp=[stemmer.stem(i) for i in list_of_keyword] 
+list_of_one_hot_encode=[0]*len(user_input_words)
+for i in list_of_inp:
+    if i in list_of_columns:
+        print(i)
+        list_of_one_hot_encode[list_of_columns.index(i)]=1
+
+print(nb.predict(np.array(list_of_one_hot_encode).reshape(1, -1)))      
